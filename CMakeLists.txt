@@ -7,7 +7,7 @@ project(ScriptScheduler VERSION 1.0)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
-# Define source files
+# Define source files 
 set(SOURCE_FILES
     src/main.c
     src/scheduler.c
