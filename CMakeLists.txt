@@ -11,6 +11,7 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 set(SOURCE_FILES
     src/main.c
     src/scheduler.c
+    src/utils/func.c
 )
 
 # Include directories
