@@ -1,6 +1,7 @@
-#include <stdio.h>
+#include "scheduler.h"
 
-int main() {
-    printf("Script Scheduler Engine Started!\n");
+int main(void) {
+    initialize_scheduler();
+    run_scheduler();
     return 0;
 }

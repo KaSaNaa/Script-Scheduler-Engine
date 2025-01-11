@@ -1,6 +1,10 @@
 #include "scheduler.h"
+#include <stdio.h>
 
-// Function prototypes for future code
-void initialize_scheduler() {
-    // Initialization logic will go here later
+void initialize_scheduler(void) {
+    printf("Scheduler Initialized.\n");
+}
+
+void run_scheduler(void) {
+    printf("Scheduler Running.\n");
 }
