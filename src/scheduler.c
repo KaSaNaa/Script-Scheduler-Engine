@@ -9,6 +9,10 @@ void initialize_scheduler(void) {
 
 void run_scheduler(void) {
     printf("Scheduler Running.\n");
-    printf("Executing script: task1.py\n");
+
+    printf("Executing script: test1.py\n");
     execute_script("scripts/test1.py");
+
+    printf("Executing script: test2.sh\n");
+    execute_script("scripts/test2.sh");
 }
