@@ -18,7 +18,22 @@ void execute_script(const char *script) { // this will execute a bash or python 
     }
 
     char command[256];
-    snprintf(command, sizeof(command), "python %s", script); // Adjust based on script type
+
+    const char *ext = strrchr(script, '.');
+    
+    if (ext != NULL) {
+        if (strcmp(ext, ".sh") == 0) {
+            snprintf(command, sizeof(command), "bash %s", script);
+        } else if (strcmp(ext, ".py") == 0) {
+            snprintf(command, sizeof(command), "python %s", script);
+        } else {
+            printf("Unsupported script type: %s\n", ext);
+            return;
+        }
+    } else {
+        printf("No file extension found in script: %s\n", script);
+        return;
+    }
     printf("Executing command: %s\n", command);
     system(command);
 }
