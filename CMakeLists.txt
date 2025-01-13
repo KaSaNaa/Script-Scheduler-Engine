@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 
+# Set the C and C++ compilers
+set(CMAKE_C_COMPILER clang)
+set(CMAKE_CXX_COMPILER clang++)
+
 # Project name and version
 project(ScriptScheduler VERSION 1.0)
 
