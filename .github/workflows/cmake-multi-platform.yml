@@ -15,7 +15,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         build_type: [Release]
-        c_compiler: [gcc, clang, mingw32-gcc]
         include:
           - os: windows-latest
             c_compiler: mingw32-gcc
@@ -26,27 +25,22 @@ jobs:
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
-        exclude:
-          - os: windows-latest
-            c_compiler: gcc
-          - os: windows-latest
-            c_compiler: clang
-          - os: ubuntu-latest
-            c_compiler: mingw32-gcc
 
     steps:
     - uses: actions/checkout@v4
 
     - name: Set up MinGW on Windows
       if: matrix.os == 'windows-latest' && matrix.c_compiler == 'mingw32-gcc'
-      run: |
-        choco install mingw
+      run: choco install mingw
+
+    - name: Install dependencies on Ubuntu
+      if: matrix.os == 'ubuntu-latest'
+      run: sudo apt-get update && sudo apt-get install -y build-essential
 
     - name: Set reusable strings
       id: strings
       shell: bash
-      run: |
-        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+      run: echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
     - name: Configure CMake
       run: >
