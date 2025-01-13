@@ -9,9 +9,9 @@
 ---
 
 ### **Phase 2: Core Script Execution (Planned)**
-- [ ] Implement a basic script runner module:
-  - [ ] Allow execution of Python and Bash scripts.
-  - [ ] Capture and log the output (stdout and stderr).
+- [x] Implement a basic script runner module:
+  - [x] Allow execution of Python and Bash scripts.
+  - [x] Capture and log the output (stdout and stderr).
   - [ ] Monitor script exit statuses.
 - [ ] Test script execution with short and long-running scripts.
 
