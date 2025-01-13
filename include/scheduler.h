@@ -4,8 +4,8 @@
 #define SCHEDULER_H
 
 typedef struct {
-    int priority;
     char *script_name;
+    int priority;
     // A simple way to prioritize tasks.
     // * Other fields like status, execution time, etc. can be added here.
 } Task;
