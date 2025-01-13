@@ -1,6 +1,13 @@
 #include <stdlib.h>
 #include <stdio.h>
+#ifdef _WIN32
+#include <direct.h>
+#define getcwd _getcwd
+#define access _access
+#define F_OK 0
+#else
 #include <unistd.h>
+#endif
 
 void execute_script(const char *script) { // this will execute a bash or python script depending on the system
     char cwd[256];
