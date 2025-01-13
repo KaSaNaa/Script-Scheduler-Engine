@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
 
@@ -10,5 +12,6 @@ typedef struct {
 
 void initialize_scheduler(void);
 void run_scheduler(void);
+bool add_task(Task task);
 
 #endif // SCHEDULER_H
