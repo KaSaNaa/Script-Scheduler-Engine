@@ -18,6 +18,10 @@ set(SOURCE_FILES
     src/utils/func.c
 )
 
+find_package(Threads REQUIRED)
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+target_link_libraries( ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT} )
+
 # Include directories
 include_directories(include)
 
