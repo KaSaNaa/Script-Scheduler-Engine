@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Set the C and C++ compilers
-set(CMAKE_C_COMPILER clang)
-set(CMAKE_CXX_COMPILER clang++)
+set(CMAKE_C_COMPILER gcc)
+set(CMAKE_CXX_COMPILER g++)
 
 # Project name and version
 project(ScriptScheduler VERSION 1.0)
@@ -19,30 +19,35 @@ set(SOURCE_FILES
 )
 
 find_package(Threads REQUIRED)
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries( ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT} )
 
 # Include directories
 include_directories(include)
 
 # Add executable
-add_executable(script_scheduler ${SOURCE_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+
+# Link pthread library
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
+else()
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_THREAD_LIBS_INIT})
+endif()
 
 # Handle compiler flags for MSVC
 if(MSVC)
-    target_compile_options(script_scheduler PRIVATE /Wall)
-    set_property(TARGET script_scheduler PROPERTY 
+    target_compile_options(${PROJECT_NAME} PRIVATE /Wall)
+    set_property(TARGET ${PROJECT_NAME} PROPERTY 
         MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR "$<CONFIG>" STREQUAL "Debug")
-        target_compile_options(script_scheduler PRIVATE /RTC1)
+        target_compile_options(${PROJECT_NAME} PRIVATE /RTC1)
     elseif(CMAKE_BUILD_TYPE STREQUAL "Release" OR "$<CONFIG>" STREQUAL "Release")
-        target_compile_options(script_scheduler PRIVATE /O2)
+        target_compile_options(${PROJECT_NAME} PRIVATE /O2)
     endif()
 else()
     # For non-MSVC compilers (e.g., GCC/Clang)
     if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR "$<CONFIG>" STREQUAL "Debug")
-        target_compile_options(script_scheduler PRIVATE -Wall -Wextra -g)
+        target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -g)
     elseif(CMAKE_BUILD_TYPE STREQUAL "Release" OR "$<CONFIG>" STREQUAL "Release")
-        target_compile_options(script_scheduler PRIVATE -Wall -Wextra -O2)
+        target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -O2)
     endif()
 endif()
