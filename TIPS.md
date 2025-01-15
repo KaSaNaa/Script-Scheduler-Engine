@@ -1,5 +1,3 @@
-Collecting workspace information
-
 To make the script scheduling engine robust and resilient, you can implement several features and mechanisms. Here are some suggestions:
 
 ### 1. **Error Handling and Logging**
