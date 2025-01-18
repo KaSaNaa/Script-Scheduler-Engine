@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Set the C and C++ compilers
-set(CMAKE_C_COMPILER gcc)
-set(CMAKE_CXX_COMPILER g++)
+set(CMAKE_C_COMPILER "C:/msys64/mingw64/bin/gcc.exe")
+set(CMAKE_CXX_COMPILER "C:/msys64/mingw64/bin/g++.exe")
 
 # Project name and version
 project(ScriptScheduler VERSION 1.0)
@@ -10,6 +10,9 @@ project(ScriptScheduler VERSION 1.0)
 # Set C standard
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pthread")
 
 # Define source files
 set(SOURCE_FILES
@@ -22,16 +25,13 @@ find_package(Threads REQUIRED)
 
 # Include directories
 include_directories(include)
+include_directories("C:/msys64/mingw64/include")
 
 # Add executable
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 # Link pthread library
-if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
-else()
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_THREAD_LIBS_INIT})
-endif()
+target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
 
 # Handle compiler flags for MSVC
 if(MSVC)
