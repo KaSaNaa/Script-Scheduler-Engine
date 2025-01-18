@@ -1,6 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/types.h>
+#include <errno.h>
+#include "pthread.h"
+// #include <sys/wait.h>
+#include "scheduler.h"
 
 #ifdef _WIN32
 #include <direct.h>
@@ -10,6 +15,12 @@
 #else
 #include <unistd.h>
 #endif
+
+#define MAX_TASKS 10
+#define MAX_RETRIES 3
+
+static Task task_queue[MAX_TASKS];
+static int task_count = 0;
 
 void execute_script(const char *script) { // this will execute a bash or python script depending on the system
     char cwd[256];
@@ -48,4 +59,41 @@ void execute_script(const char *script) { // this will execute a bash or python 
     }
     printf("Executing command: %s\n", command);
     system(command);
+}
+
+void log_error(const char *message) {
+    FILE * log_file = fopen("logs/scheduler.log", "a");
+    if (log_file)
+    {
+        fprintf(log_file, "ERROR: %s: %s\n", message, strerror(errno));
+        fclose(log_file);
+    }
+}
+
+void execute_script_with_retries(const char *script) {
+    int retries = 0;
+    while(retries < MAX_RETRIES) {
+        if (system(script) == 0) {
+            return;
+        }
+        retries++;
+        log_error("Retrying script execution");
+    }
+    log_error("Max retries reached, giving up");
+}
+
+void *execute_script_thread(void *arg) {
+    char *script = (char *)arg;
+    execute_script_with_retries(script);
+    return NULL;
+}
+
+void run_scheduler_concurrent(void) {
+    pthread_t threads[MAX_TASKS];
+    for (int i = 0; i < task_count; i++) {
+        pthread_create(&threads[i], NULL, execute_script_thread, (void *)task_queue[i].script_name);
+    }
+    for (int i = 0; i < task_count; i++) {
+        pthread_join(threads[i], NULL);
+    }
 }
