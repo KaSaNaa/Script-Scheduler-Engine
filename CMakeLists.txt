@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Set the C and C++ compilers
-set(CMAKE_C_COMPILER "C:/msys64/mingw64/bin/gcc.exe")
-set(CMAKE_CXX_COMPILER "C:/msys64/mingw64/bin/g++.exe")
+set(CMAKE_C_COMPILER "/usr/bin/gcc")
+set(CMAKE_CXX_COMPILER "/usr/bin/g++")
 
 # Project name and version
 project(ScriptScheduler VERSION 1.0)
