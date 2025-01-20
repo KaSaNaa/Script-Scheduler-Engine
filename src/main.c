@@ -6,8 +6,11 @@ int main(void) {
     initialize_scheduler();
     start_scheduler_thread();
 
-    Task task1 = {"scripts/test1.py", 1};
-    Task task2 = {"scripts/test2.sh", 2};
+    char *script1 = "scripts/test1.py";
+    char *script2 = "scripts/test2.sh";
+
+    Task task1 = {script1, 1};
+    Task task2 = {script2, 2};
 
     add_task(task1);
     add_task(task2);
@@ -18,6 +21,4 @@ int main(void) {
     while (1) {
         pause();
     }
-    
-    return 0;
 }
