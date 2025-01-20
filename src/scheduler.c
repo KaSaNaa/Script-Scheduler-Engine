@@ -6,12 +6,10 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#define MAX_TASKS 10
-
-static Task task_queue[MAX_TASKS];
-static int task_count = 0;
-static pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
-static pthread_cond_t queue_cond = PTHREAD_COND_INITIALIZER;
+Task task_queue[MAX_TASKS];
+int task_count = 0;
+pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t queue_cond = PTHREAD_COND_INITIALIZER;
 
 void initialize_scheduler(void) {
     // Initialize the scheduler (setup necessary data structures, etc.)
@@ -20,23 +18,7 @@ void initialize_scheduler(void) {
 
 void *scheduler_thread_func(void *arg) {
     (void)arg; // Unused parameter
-    while (1) {
-        pthread_mutex_lock(&queue_mutex);
-        while (task_count == 0) {
-            pthread_cond_wait(&queue_cond, &queue_mutex);
-        }
-
-        Task task = task_queue[0];
-        for (int i = 1; i < task_count; i++) {
-            task_queue[i - 1] = task_queue[i];
-        }
-        task_count--;
-
-        pthread_mutex_unlock(&queue_mutex);
-
-        printf("Executing script: %s\n", task.script_name);
-        execute_script(task.script_name);
-    }
+    run_scheduler_concurrent();
     return NULL;
 }
 
