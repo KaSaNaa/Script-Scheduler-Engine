@@ -1,4 +1,4 @@
 #!/bin/bash
 
-echo "Hello"
+echo "This is a bash test script."
  

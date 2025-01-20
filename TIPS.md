@@ -1,5 +1,35 @@
 To make the script scheduling engine robust and resilient, you can implement several features and mechanisms. Here are some suggestions:
 
+```mermaid
+graph TD
+    A[Start] -->|Initialize scheduler| B[initialize_scheduler]
+    B -->|Start scheduler thread| C[start_scheduler_thread]
+    C -->|Create Task 1| D[Add Task 1]
+    D -->|Create Task 2| E[Add Task 2]
+    E -->|Setup signal handlers| F[setup_signal_handlers]
+    F -->|Start watchdog process| G[start_watchdog]
+    G -->|Fork watchdog process| H[Watchdog Process]
+    H -->|Fork scheduler process| I[Scheduler Process]
+    I -->|Run scheduler concurrently| J[run_scheduler_concurrent]
+    J -->|Execute Script 1| K[Execute script1.py]
+    J -->|Execute Script 2| L[Execute script2.sh]
+    K -->|Log error if Script 1 fails| M[Log Error]
+    L -->|Log error if Script 2 fails| N[Log Error]
+    M -->|Retry Script 1 if fails| O[Retry Script 1]
+    N -->|Retry Script 2 if fails| P[Retry Script 2]
+    O -->|Max retries reached for Script 1| Q[Max Retries Reached]
+    P -->|Max retries reached for Script 2| R[Max Retries Reached]
+    Q -->|Log error for Script 1| S[Log Error]
+    R -->|Log error for Script 2| T[Log Error]
+    S -->|Scheduler process ends| U[Scheduler Process Ends]
+    T -->|Scheduler process ends| U
+    U -->|Watchdog restarts scheduler| V[Watchdog Restarts Scheduler]
+    V -->|Fork scheduler process| I
+    H -->|Watchdog monitors scheduler| W[Watchdog Monitors Scheduler]
+    W -->|Fork scheduler process| H
+    G -->|Pause main process| X[Main Process Pauses]
+```
+
 ### 1. **Error Handling and Logging**
 Implement detailed logging and error handling to capture and log all activities, errors, and exceptions.
 
