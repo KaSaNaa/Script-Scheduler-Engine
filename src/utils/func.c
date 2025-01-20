@@ -6,15 +6,8 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-
-#ifdef _WIN32
-#include <direct.h>
-#define getcwd _getcwd
-#define access _access
-#define F_OK 0
-#else
+#include <time.h>
 #include <unistd.h>
-#endif
 
 #define MAX_TASKS 10
 #define MAX_RETRIES 3
@@ -65,7 +58,10 @@ void execute_script(const char *script) { // this will execute a bash or python
 void log_error(const char *message) {
   FILE *log_file = fopen("logs/scheduler.log", "a");
   if (log_file) {
-    fprintf(log_file, "ERROR: %s: %s\n", message, strerror(errno));
+    time_t now = time(NULL);
+    char timestamp[20];
+    strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", localtime(&now));
+    fprintf(log_file, "[%s] ERROR: %s: %s\n", timestamp, message, strerror(errno));
     fclose(log_file);
   } else {
     perror("Failed to open log file. Create the directory /log if it does not exist.");
