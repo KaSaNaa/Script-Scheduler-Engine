@@ -1,4 +1,4 @@
-name: CMake on multiple platforms
+name: CMake on Linux
 
 on:
   push:
@@ -26,10 +26,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up MinGW on Windows
-      if: matrix.os == 'windows-latest' && matrix.c_compiler == 'mingw32-gcc'
-      run: choco install mingw
-
     - name: Install dependencies on Ubuntu
       if: matrix.os == 'ubuntu-latest'
       run: sudo apt-get update && sudo apt-get install -y build-essential
@@ -38,16 +34,6 @@ jobs:
       id: strings
       shell: bash
       run: echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
-
-    - name: Configure CMake on Windows
-      if: matrix.os == 'windows-latest'
-      run: >
-        cmake -B ${{ steps.strings.outputs.build-output-dir }}
-        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
-        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
-        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -S ${{ github.workspace }}
-        -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/mingw_toolchain.cmake
 
     - name: Configure CMake on Unix-like systems
       if: matrix.os == 'ubuntu-latest'
