@@ -45,16 +45,16 @@ int main(void) {
     pthread_mutex_destroy(&serial_mtx);
 }
 
-#include <stdio.h>
+// #include <stdio.h>
 
-int main(void) {
-    char s[] = "Hello World!";
-    char *t;
+// int main(void) {
+//     char s[] = "Hello World!";
+//     char *t;
 
-    t = s;
-    printf("%s %p\n", "print s = ", s);
-    printf("%s %p\n %s %p\n", "t address = ", t, "s address", (void *)s);
+//     t = s;
+//     printf("%s %p\n", "print s = ", s);
+//     printf("%s %p\n %s %p\n", "t address = ", t, "s address", (void *)s);
 
-    t[0] = 'z';
-    printf("%s\n", s);
-}
+//     t[0] = 'z';
+//     printf("%s\n", s);
+// }
