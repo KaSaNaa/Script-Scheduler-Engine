@@ -1,5 +1,5 @@
-#include "scheduler.h"
-#include "func.h"
+#include <scheduler.h>
+#include <func.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <pthread.h>
