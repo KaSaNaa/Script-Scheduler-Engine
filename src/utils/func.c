@@ -9,50 +9,50 @@
 #include <time.h>
 #include <unistd.h>
 
-#define MAX_TASKS 10
 #define MAX_RETRIES 3
 
-static Task task_queue[MAX_TASKS];
-static int task_count = 0;
-
-void execute_script(const char *script) { // this will execute a bash or python
-                                          // script depending on the system
-  char cwd[256];
-  if (getcwd(cwd, sizeof(cwd)) != NULL) {
-    // printf("Current working dir: %s\n", cwd);
-    printf("\n");
-  } else {
-    perror("getcwd() error");
-  }
-
-  if (access(script, F_OK) != -1) {
-    // printf("Script file exists: %s\n", script);
-    printf("\n");
-  } else {
-    // printf("Script file doesnt not exist: %s\n", script);
-    printf("\n");
-    return;
-  }
-
-  char command[256];
-
-  const char *ext = strrchr(script, '.');
-
-  if (ext != NULL) {
-    if (strcmp(ext, ".sh") == 0) {
-      snprintf(command, sizeof(command), "bash %s", script);
-    } else if (strcmp(ext, ".py") == 0) {
-      snprintf(command, sizeof(command), "python %s", script);
+void execute_script(const char *script) {
+    char cwd[256];
+    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+        printf("Current working dir: %s\n", cwd);
     } else {
-      printf("Unsupported script type: %s\n", ext);
-      return;
+        perror("getcwd() error");
     }
-  } else {
-    printf("No file extension found in script: %s\n", script);
-    return;
-  }
-  printf("Executing command: %s\n", command);
-  system(command);
+
+    if (access(script, F_OK) != -1) {
+        printf("Script file exists: %s\n", script);
+    } else {
+        printf("Script file does not exist: %s\n", script);
+        return;
+    }
+
+    if (access(script, X_OK) != 0) {
+        printf("Script file is not executable: %s\n", script);
+        return;
+    }
+
+    char command[256];
+    const char *ext = strrchr(script, '.');
+
+    if (ext != NULL) {
+        if (strcmp(ext, ".sh") == 0) {
+            snprintf(command, sizeof(command), "bash %s", script);
+        } else if (strcmp(ext, ".py") == 0) {
+            snprintf(command, sizeof(command), "python3 %s", script);
+        } else {
+            printf("Unsupported script type: %s\n", ext);
+            return;
+        }
+    } else {
+        printf("No file extension found in script: %s\n", script);
+        return;
+    }
+
+    printf("Executing command: %s\n", command);
+    int result = system(command);
+    if (result != 0) {
+        printf("Command execution failed with code: %d\n", result);
+    }
 }
 
 void log_error(const char *message) {
@@ -87,14 +87,24 @@ void *execute_script_thread(void *arg) {
 }
 
 void run_scheduler_concurrent(void) {
-  pthread_t threads[MAX_TASKS];
-  for (int i = 0; i < task_count; i++) {
-    pthread_create(&threads[i], NULL, execute_script_thread,
-                   (void *)task_queue[i].script_name);
-  }
-  for (int i = 0; i < task_count; i++) {
-    pthread_join(threads[i], NULL);
-  }
+    pthread_t threads[MAX_TASKS];
+    while (1) {
+        pthread_mutex_lock(&queue_mutex);
+        while (task_count == 0) {
+            pthread_cond_wait(&queue_cond, &queue_mutex);
+        }
+
+        Task task = task_queue[0];
+        for (int i = 1; i < task_count; i++) {
+            task_queue[i - 1] = task_queue[i];
+        }
+        task_count--;
+
+        pthread_mutex_unlock(&queue_mutex);
+
+        pthread_create(&threads[0], NULL, execute_script_thread, (void *)task.script_name);
+        pthread_join(threads[0], NULL);
+    }
 }
 
 void handle_shutdown(int signum) {
