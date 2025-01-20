@@ -1,14 +1,26 @@
-#include "scheduler.h"
+#include <stdio.h>
+#include <pthread.h>
+
+void *run(void *arg) {
+    (void)arg;
+    static int serial = 0;
+
+    printf("Thread running! %d\n", serial);
+
+    serial++;
+    return NULL;
+}
+
+#define THREAD_COUNT 10
 
 int main(void) {
-    initialize_scheduler();
-    
-    Task task1 = {"scripts/test1.py", 1};
-    Task task2 = {"scripts/test2.sh", 2};
+    pthread_t t[THREAD_COUNT];
 
-    add_task(task1);
-    add_task(task2);
+    for (int i = 0; i < THREAD_COUNT; i++) {
+        pthread_create(t + i, NULL, run, NULL);
+    }
 
-    run_scheduler();
-    return 0;
+    for (int i = 0; i < THREAD_COUNT; i++) {
+        pthread_join(t[i], NULL);
+    }
 }
