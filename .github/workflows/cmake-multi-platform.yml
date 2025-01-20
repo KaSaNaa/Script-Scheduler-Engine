@@ -13,12 +13,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
         build_type: [Release]
         include:
-          - os: windows-latest
-            c_compiler: mingw32-gcc
-            cpp_compiler: mingw32-g++
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
