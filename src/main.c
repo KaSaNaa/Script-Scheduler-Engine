@@ -1,5 +1,5 @@
-#include "scheduler.h"
-#include "func.h"
+#include <scheduler.h>
+#include <func.h>
 #include <unistd.h>
 
 int main(void) {
