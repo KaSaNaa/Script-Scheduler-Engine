@@ -1,0 +1,12 @@
+{
+  "tasks": [
+    {
+      "script": "scripts/test1.py",
+      "priority": 7
+    },
+    {
+      "script": "scripts/test2.sh",
+      "priority": 5
+    }
+  ]
+}
