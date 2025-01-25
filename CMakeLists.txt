@@ -22,6 +22,7 @@ set(SOURCE_FILES
 )
 
 find_package(Threads REQUIRED)
+find_package(json-c REQUIRED)
 
 # Include directories
 include_directories(include)
@@ -31,7 +32,7 @@ include_directories("C:/msys64/mingw64/include")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 # Link pthread library
-target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
+target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads json-c)
 
 # Handle compiler flags for MSVC
 if(MSVC)
