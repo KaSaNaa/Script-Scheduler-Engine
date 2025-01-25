@@ -1,3 +1,7 @@
 #!/usr/bin/env python3
 
-print("This is a python test script.")
+def test(): 
+    print("Hello from test1.py")
+    return 0
+
+test()
