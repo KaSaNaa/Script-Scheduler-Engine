@@ -1,5 +1,5 @@
-#include "pthread.h"
-#include "scheduler.h"
+#include <pthread.h>
+#include <scheduler.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
