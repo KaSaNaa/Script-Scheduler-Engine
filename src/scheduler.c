@@ -1,6 +1,6 @@
-#include <scheduler.h>
-#include <func.h>
-#include <priority_queue.h>
+#include "scheduler.h"
+#include "func.h"
+#include "priority_queue.h"
 #include <stdio.h>
 #include <stdbool.h>
 #include <pthread.h>
