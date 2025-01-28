@@ -2,7 +2,6 @@
 #include <priority_queue.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <string.h>
 
 PriorityQueue *create_priority_queue(int capacity) {
   PriorityQueue *pq = (PriorityQueue *)malloc(sizeof(PriorityQueue));
