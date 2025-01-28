@@ -16,9 +16,10 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pthread")
 
 # Define source files
 set(SOURCE_FILES
-    src/main.c
-    src/scheduler.c
-    src/utils/func.c
+    "src/main.c"
+    "src/scheduler.c"
+    "src/utils/func.c"
+    "src/priority_queue.c"
 )
 
 find_package(Threads REQUIRED)
