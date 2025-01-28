@@ -1,5 +1,4 @@
-#include "pthread.h"
-#include "scheduler.h"
+#include <pthread.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,6 +11,7 @@
 #include <json-c/json_object_iterator.h>
 #include <json-c/json_tokener.h>
 #include <json-c/json.h>
+#include "scheduler.h"
 
 #define MAX_RETRIES 3
 
@@ -94,16 +94,11 @@ void run_scheduler_concurrent(void) {
     pthread_t threads[MAX_TASKS];
     while (1) {
         pthread_mutex_lock(&queue_mutex);
-        while (task_count == 0) {
+        while (is_empty(task_queue)) {
             pthread_cond_wait(&queue_cond, &queue_mutex);
         }
 
-        Task task = task_queue[0];
-        for (int i = 1; i < task_count; i++) {
-            task_queue[i - 1] = task_queue[i];
-        }
-        task_count--;
-
+        Task task = extract_max(task_queue);
         pthread_mutex_unlock(&queue_mutex);
 
         pthread_create(&threads[0], NULL, execute_script_thread, (void *)task.script_name);

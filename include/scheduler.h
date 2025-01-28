@@ -1,20 +1,12 @@
 #include <stdbool.h>
 #include <pthread.h>
+#include "priority_queue.h"
 
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
+#define MAX_TASKS 100
 
-typedef struct {
-    char *script_name;
-    int priority;
-    // A simple way to prioritize tasks.
-    // * Other fields like status, execution time, etc. can be added here.
-} Task;
-
-#define MAX_TASKS 10
-
-extern Task task_queue[MAX_TASKS];
-extern int task_count;
+extern PriorityQueue *task_queue;
 extern pthread_mutex_t queue_mutex;
 extern pthread_cond_t queue_cond;
 

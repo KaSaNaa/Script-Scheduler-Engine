@@ -1,4 +1,3 @@
-
 #include <scheduler.h>
 #include <func.h>
 #include <stddef.h>
@@ -16,4 +15,5 @@ int main(void) {
     while (1) {
         pause();
     }
+    //
 }
