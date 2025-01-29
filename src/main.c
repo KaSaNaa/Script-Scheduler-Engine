@@ -1,14 +1,19 @@
-#include "scheduler.h"
+#include <scheduler.h>
+#include <func.h>
+#include <stddef.h>
+#include <unistd.h>
 
 int main(void) {
     initialize_scheduler();
+    start_scheduler_thread();
+
+    load_tasks_from_json("config.json");
+
+    setup_signal_handlers();
+    start_watchdog();
     
-    Task task1 = {1, "scripts/test1.py"};
-    Task task2 = {2, "scripts/test2.sh"};
-
-    add_task(task1);
-    add_task(task2);
-
-    run_scheduler();
-    return 0;
+    while (1) {
+        pause();
+    }
+    //
 }
