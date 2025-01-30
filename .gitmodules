@@ -1,0 +1,3 @@
+[submodule "wiki"]
+	path = wiki
+	url = https://github.com/KaSaNaa/Script-Scheduler-Engine.wiki.git
