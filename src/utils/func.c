@@ -114,8 +114,8 @@ void run_scheduler_concurrent(void) {
              localtime(&current_time));
     strftime(scheduled_time_str, sizeof(scheduled_time_str),
              "%Y-%m-%d %H:%M:%S", localtime(&task.scheduled_time));
-    printf("Current time: %s\n", current_time_str);
-    printf("Scheduled time for task: %s\n", scheduled_time_str);
+    printf("\nCurrent time: %s\n", current_time_str);
+    printf("\nScheduled time for task: %s\n\n", scheduled_time_str);
 
     double time_diff = difftime(task.scheduled_time, current_time);
     if (time_diff > 0) {
@@ -200,7 +200,7 @@ void load_tasks_from_json(const char *filename) {
     json_object_object_get_ex(task, "time", &time);
 
     const char *time_str = json_object_get_string(time);
-    printf("Parsing time: %s\n", time_str); // Debugging statement
+    printf("\nParsing time: %s\n", time_str); // Debugging statement
 
     if (strptime(time_str, "%Y-%m-%dT%H:%M:%S", &tm) == NULL) {
       printf("Failed to parse time: %s\n", time_str); // Debugging statement
