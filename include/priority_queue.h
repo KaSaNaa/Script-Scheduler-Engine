@@ -2,19 +2,21 @@
 #define PRIORITY_QUEUE_H
 
 #include <stdbool.h>
+#include <time.h>
 
 typedef struct {
-    char *script_name;
-    int priority;
+  char *script_name;
+  int priority;
+  time_t scheduled_time;
 } Task;
 
 typedef struct {
-    Task *tasks;
-    int capacity;
-    int size;
+  Task *tasks;
+  int capacity;
+  int size;
 } PriorityQueue;
 
-PriorityQueue* create_priority_queue(int capacity);
+PriorityQueue *create_priority_queue(int capacity);
 void destroy_priority_queue(PriorityQueue *pq);
 bool insert_task(PriorityQueue *pq, Task task);
 Task extract_max(PriorityQueue *pq);

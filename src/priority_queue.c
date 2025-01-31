@@ -69,13 +69,11 @@ bool insert_task(PriorityQueue *pq, Task task) {
 }
 
 Task extract_max(PriorityQueue *pq) {
-    Task max_task = pq->tasks[0];
-    pq->tasks[0] = pq->tasks[pq->size - 1];
-    pq->size--;
-    heapify_down(pq, 0);
-    return max_task;
+  Task max_task = pq->tasks[0];
+  pq->tasks[0] = pq->tasks[pq->size - 1];
+  pq->size--;
+  heapify_down(pq, 0);
+  return max_task;
 }
 
-bool is_empty(PriorityQueue *pq) {
-    return pq->size == 0;
-}
+bool is_empty(PriorityQueue *pq) { return pq->size == 0; }
