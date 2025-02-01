@@ -29,11 +29,14 @@ void start_scheduler_thread(void) {
 }
 
 bool add_task(Task task) {
-  pthread_mutex_lock(&queue_mutex);
-  bool success = insert_task(task_queue, task);
-  if (success) {
-    pthread_cond_signal(&queue_cond);
-  }
-  pthread_mutex_unlock(&queue_mutex);
-  return success;
+    pthread_mutex_lock(&queue_mutex);
+    bool success = insert_task(task_queue, task);
+    if (success) {
+        char scheduled_time_str[20];
+        strftime(scheduled_time_str, sizeof(scheduled_time_str), "%Y-%m-%d %H:%M:%S", localtime(&task.scheduled_time));
+        printf("Task added: %s at %s\n", task.script_name, scheduled_time_str); // Debugging statement
+        pthread_cond_signal(&queue_cond);
+    }
+    pthread_mutex_unlock(&queue_mutex);
+    return success;
 }
