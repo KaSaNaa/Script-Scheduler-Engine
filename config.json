@@ -2,11 +2,15 @@
   "tasks": [
     {
       "script": "scripts/test1.py",
-      "priority": 7
+      "time": "2025-02-01T14:49:00"
     },
     {
       "script": "scripts/test2.sh",
-      "priority": 5
+      "time": "2025-02-01T14:49:10"
+    },
+    {
+      "script": "scripts/test3.sh",
+      "time": "2025-02-20T10:00:00"
     }
   ]
 }

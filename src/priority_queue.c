@@ -1,6 +1,5 @@
-#include <asm-generic/errno.h>
 #include <priority_queue.h>
-#include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 PriorityQueue *create_priority_queue(int capacity) {
@@ -11,7 +10,7 @@ PriorityQueue *create_priority_queue(int capacity) {
   return pq;
 }
 
-void destroy_priotiy_queue(PriorityQueue *pq) {
+void destroy_priority_queue(PriorityQueue *pq) {
   free(pq->tasks);
   free(pq);
 }
@@ -25,7 +24,7 @@ void swap(Task *a, Task *b) {
 void heapify_up(PriorityQueue *pq, int index) {
   while (index > 0) {
     int parent = (index - 1) / 2;
-    if (pq->tasks[index].priority > pq->tasks[parent].priority) {
+    if (pq->tasks[index].scheduled_time < pq->tasks[parent].scheduled_time) {
       swap(&pq->tasks[index], &pq->tasks[parent]);
       index = parent;
     } else {
@@ -35,23 +34,23 @@ void heapify_up(PriorityQueue *pq, int index) {
 }
 
 void heapify_down(PriorityQueue *pq, int index) {
-  int left, right, largest;
+  int left, right, smallest;
   while (1) {
     left = 2 * index + 1;
     right = 2 * index + 2;
-    largest = index;
+    smallest = index;
 
     if (left < pq->size &&
-        pq->tasks[left].priority > pq->tasks[largest].priority) {
-      largest = left;
+        pq->tasks[left].scheduled_time < pq->tasks[smallest].scheduled_time) {
+      smallest = left;
     }
     if (right < pq->size &&
-        pq->tasks[right].priority > pq->tasks[largest].priority) {
-      largest = right;
+        pq->tasks[right].scheduled_time < pq->tasks[smallest].scheduled_time) {
+      smallest = right;
     }
-    if (largest != index) {
-      swap(&pq->tasks[index], &pq->tasks[largest]);
-      index = largest;
+    if (smallest != index) {
+      swap(&pq->tasks[index], &pq->tasks[smallest]);
+      index = smallest;
     } else {
       break;
     }
@@ -69,13 +68,16 @@ bool insert_task(PriorityQueue *pq, Task task) {
 }
 
 Task extract_max(PriorityQueue *pq) {
-    Task max_task = pq->tasks[0];
-    pq->tasks[0] = pq->tasks[pq->size - 1];
-    pq->size--;
-    heapify_down(pq, 0);
-    return max_task;
+  Task max_task = pq->tasks[0];
+  pq->tasks[0] = pq->tasks[pq->size - 1];
+  pq->size--;
+  heapify_down(pq, 0);
+  char scheduled_time_str[20];
+  strftime(scheduled_time_str, sizeof(scheduled_time_str), "%Y-%m-%d %H:%M:%S",
+           localtime(&max_task.scheduled_time));
+  printf("Task extracted: %s at %s\n", max_task.script_name,
+         scheduled_time_str); // Debugging statement
+  return max_task;
 }
 
-bool is_empty(PriorityQueue *pq) {
-    return pq->size == 0;
-}
+bool is_empty(PriorityQueue *pq) { return pq->size == 0; }
