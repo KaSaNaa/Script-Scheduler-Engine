@@ -6,7 +6,6 @@
 
 typedef struct {
   char *script_name;
-  int priority;
   time_t scheduled_time;
 } Task;
 

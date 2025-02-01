@@ -183,7 +183,6 @@ void load_tasks_from_json(const char *filename) {
   struct json_object *tasks;
   struct json_object *task;
   struct json_object *script;
-  struct json_object *priority;
   struct json_object *time;
   size_t n_tasks;
   size_t i;
@@ -196,7 +195,6 @@ void load_tasks_from_json(const char *filename) {
   for (i = 0; i < n_tasks; i++) {
     task = json_object_array_get_idx(tasks, i);
     json_object_object_get_ex(task, "script", &script);
-    json_object_object_get_ex(task, "priority", &priority);
     json_object_object_get_ex(task, "time", &time);
 
     const char *time_str = json_object_get_string(time);
@@ -209,7 +207,6 @@ void load_tasks_from_json(const char *filename) {
   time_t scheduled_time = mktime(&tm);
 
   Task new_task = {.script_name = strdup(json_object_get_string(script)),
-                   .priority = json_object_get_int(priority),
                    .scheduled_time = scheduled_time};
   add_task(new_task);
 
