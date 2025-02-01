@@ -164,66 +164,65 @@ void start_watchdog() {
 }
 
 void load_tasks_from_json(const char *filename) {
-    FILE *file = fopen(filename, "r");
-    if (!file) {
-        perror("Failed to open config.json");
-        return;
+  FILE *file = fopen(filename, "r");
+  if (!file) {
+    perror("Failed to open config.json");
+    return;
+  }
+
+  fseek(file, 0, SEEK_END);
+  long length = ftell(file);
+  fseek(file, 0, SEEK_SET);
+
+  char *data = malloc(length + 1);
+  fread(data, 1, length, file);
+  fclose(file);
+  data[length] = '\0';
+
+  struct json_object *parsed_json;
+  struct json_object *tasks;
+  struct json_object *task;
+  struct json_object *script;
+  struct json_object *time;
+  size_t n_tasks;
+  size_t i;
+  struct tm tm;
+
+  parsed_json = json_tokener_parse(data);
+  json_object_object_get_ex(parsed_json, "tasks", &tasks);
+  n_tasks = json_object_array_length(tasks);
+
+  for (i = 0; i < n_tasks; i++) {
+    task = json_object_array_get_idx(tasks, i);
+    json_object_object_get_ex(task, "script", &script);
+    json_object_object_get_ex(task, "time", &time);
+
+    const char *time_str = json_object_get_string(time);
+    printf("Parsing time: %s\n", time_str); // Debugging statement
+
+    memset(&tm, 0, sizeof(struct tm));
+    if (strptime(time_str, "%Y-%m-%dT%H:%M:%S", &tm) == NULL) {
+      printf("Failed to parse time: %s\n", time_str); // Debugging statement
+      continue;
     }
 
-    fseek(file, 0, SEEK_END);
-    long length = ftell(file);
-    fseek(file, 0, SEEK_SET);
-
-    char *data = malloc(length + 1);
-    fread(data, 1, length, file);
-    fclose(file);
-    data[length] = '\0';
-
-    struct json_object *parsed_json;
-    struct json_object *tasks;
-    struct json_object *task;
-    struct json_object *script;
-    struct json_object *time;
-    size_t n_tasks;
-    size_t i;
-    struct tm tm;
-
-    parsed_json = json_tokener_parse(data);
-    json_object_object_get_ex(parsed_json, "tasks", &tasks);
-    n_tasks = json_object_array_length(tasks);
-
-    for (i = 0; i < n_tasks; i++) {
-        task = json_object_array_get_idx(tasks, i);
-        json_object_object_get_ex(task, "script", &script);
-        json_object_object_get_ex(task, "time", &time);
-
-        const char *time_str = json_object_get_string(time);
-        printf("Parsing time: %s\n", time_str); // Debugging statement
-
-        memset(&tm, 0, sizeof(struct tm));
-        if (strptime(time_str, "%Y-%m-%dT%H:%M:%S", &tm) == NULL) {
-            printf("Failed to parse time: %s\n", time_str); // Debugging statement
-            continue;
-        }
-
-        // Check if the parsed date is valid
-        if (tm.tm_mon < 0 || tm.tm_mon > 11 || tm.tm_mday < 1 || tm.tm_mday > 31) {
-            printf("Invalid date: %s\n", time_str); // Debugging statement
-            continue;
-        }
-
-        time_t scheduled_time = mktime(&tm);
-        char scheduled_time_str[20];
-        strftime(scheduled_time_str, sizeof(scheduled_time_str), "%Y-%m-%d %H:%M:%S", localtime(&scheduled_time));
-        printf("Scheduled time: %s\n", scheduled_time_str); // Debugging statement
-
-        Task new_task = {
-            .script_name = strdup(json_object_get_string(script)),
-            .scheduled_time = scheduled_time
-        };
-        add_task(new_task);
+    // Check if the parsed date is valid
+    if (tm.tm_mon < 0 || tm.tm_mon > 11 || tm.tm_mday < 1 || tm.tm_mday > 31) {
+      printf("Invalid date: %s\n", time_str); // Debugging statement
+      continue;
     }
 
-    free(data);
-    json_object_put(parsed_json);
+    time_t scheduled_time = mktime(&tm);
+    char scheduled_time_str[20];
+    strftime(scheduled_time_str, sizeof(scheduled_time_str),
+             "%Y-%m-%d %H:%M:%S", localtime(&scheduled_time));
+    printf("Scheduled time: %s\n", scheduled_time_str); // Debugging statement
+
+    Task new_task = {.script_name = strdup(json_object_get_string(script)),
+                     .scheduled_time = scheduled_time};
+    add_task(new_task);
+  }
+
+  free(data);
+  json_object_put(parsed_json);
 }
