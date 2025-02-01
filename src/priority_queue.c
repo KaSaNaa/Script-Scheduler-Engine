@@ -1,6 +1,6 @@
 #include <priority_queue.h>
+#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 PriorityQueue *create_priority_queue(int capacity) {
     PriorityQueue *pq = (PriorityQueue *)malloc(sizeof(PriorityQueue));
@@ -70,6 +70,9 @@ Task extract_max(PriorityQueue *pq) {
     pq->tasks[0] = pq->tasks[pq->size - 1];
     pq->size--;
     heapify_down(pq, 0);
+    char scheduled_time_str[20];
+    strftime(scheduled_time_str, sizeof(scheduled_time_str), "%Y-%m-%d %H:%M:%S", localtime(&max_task.scheduled_time));
+    printf("Task extracted: %s at %s\n", max_task.script_name, scheduled_time_str); // Debugging statement
     return max_task;
 }
 
