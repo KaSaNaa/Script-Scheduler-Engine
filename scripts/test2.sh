@@ -1,4 +1,4 @@
 #!/bin/bash
 
-echo "This is a bash test script."
+echo "This is a bash test2 script."
  
