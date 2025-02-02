@@ -12,29 +12,29 @@
 - [x] Implement a basic script runner module:
   - [x] Allow execution of Python and Bash scripts.
   - [x] Capture and log the output (stdout and stderr).
-  - [ ] Monitor script exit statuses.
+  - [x] Monitor script exit statuses.
 - [ ] Test script execution with short and long-running scripts.
 
 ---
 
 ### **Phase 3: Scheduler and Monitoring (Planned)**
-- [ ] Create a basic job queue to manage script scheduling.
-- [ ] Enable concurrent execution of multiple scripts.
-- [ ] Add a timeout mechanism to terminate unresponsive scripts.
-- [ ] Implement process monitoring to detect and handle failures.
+- [x] Create a basic job queue to manage script scheduling.
+- [x] Enable concurrent execution of multiple scripts.
+- [x] Add a timeout mechanism to terminate unresponsive scripts.
+- [x] Implement process monitoring to detect and handle failures.
 
 ---
 
 ### **Phase 4: Logging and Resilience (Planned)**
-- [ ] Implement detailed logging of script activities (start, end, errors).
-- [ ] Add retry mechanisms for failed scripts.
-- [ ] Introduce a watchdog process to ensure engine reliability.
+- [x] Implement detailed logging of script activities (start, end, errors).
+- [x] Add retry mechanisms for failed scripts.
+- [x] Introduce a watchdog process to ensure engine reliability.
 
 ---
 
 ### **Phase 5: Advanced Features (Future Goals)**
 - [ ] Support dependency management for scripts.
-- [ ] Add a configuration system (e.g., JSON or YAML files).
+- [x] Add a configuration system (e.g., JSON or YAML files).
 - [ ] Implement a CLI for scheduling and monitoring scripts.
 - [ ] Explore options for a lightweight web interface for real-time monitoring.
 
