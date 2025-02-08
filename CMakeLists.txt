@@ -23,6 +23,7 @@ set(SOURCE_FILES
 )
 
 find_package(Threads REQUIRED)
+set(json-c_DIR "/usr/lib/x86_64-linux-gnu/cmake/json-c")
 find_package(json-c REQUIRED)
 
 # Include directories
