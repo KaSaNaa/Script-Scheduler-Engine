@@ -29,6 +29,7 @@
 - [x] Implement detailed logging of script activities (start, end, errors).
 - [x] Add retry mechanisms for failed scripts.
 - [x] Introduce a watchdog process to ensure engine reliability.
+- [x] Implement a event listner to restart the engine when the config file is updated.
 
 ---
 

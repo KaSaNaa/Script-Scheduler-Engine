@@ -146,27 +146,141 @@ int main(void) {
 }
 ```
 
-### IDE Setup
+## **Deployment and Distribution**
 
-- **Visual Studio Code**:
-  - Install extensions for C/C++ development (e.g., C/C++ by Microsoft).
-  - Install extensions for JSON and YAML support (e.g., JSON by Microsoft, YAML by Red Hat).
-  - Configure tasks and launch settings in
+### 1. Finalize the Codebase
+Ensure that your code is stable, well-documented, and thoroughly tested. This includes:
+- Writing unit tests for your functions.
+- Ensuring proper error handling and logging.
+- Documenting your code and creating a README file with instructions on how to use the software.
 
-tasks.json
+### 2. Create a Build System
+You already have a CMakeLists.txt file, which is a good start. Ensure it is complete and can handle all dependencies and configurations.
 
- and
+### 3. Create a Setup Script
+For Linux, you can create a setup script to automate the installation process. This script should:
+- Compile the code.
+- Install the binaries and any necessary files to appropriate locations.
+- Set up the necessary directories and permissions.
 
-launch.json
+Here is an example of a simple setup script (`setup.sh`):
 
-.
+```sh
+#!/bin/bash
 
-- **CMake**:
-  - Use CMake to manage the build process. Ensure your
+# Create build directory
+mkdir -p build
+cd build
 
-CMakeLists.txt
+# Run CMake and make
+cmake ..
+make
 
- is properly configured to include necessary libraries and dependencies.
+# Install the binary
+sudo cp ScriptScheduler /usr/local/bin/
 
-- **Debugging**:
-  - Set up debugging configurations in your IDE to allow for step-by-step debugging of the scheduler and scripts.
+# Create necessary directories
+sudo mkdir -p /var/log/scriptscheduler
+sudo mkdir -p /etc/scriptscheduler
+
+# Copy the config file
+sudo cp ../config.json /etc/scriptscheduler/
+
+# Set permissions
+sudo chmod 755 /usr/local/bin/ScriptScheduler
+sudo chmod 644 /etc/scriptscheduler/config.json
+
+echo "Installation complete."
+```
+
+### 4. Create a Systemd Service
+To run your application as a system service, you can create a systemd service file. This file should be placed in system.
+
+Here is an example of a systemd service file (`scriptscheduler.service`):
+
+```ini
+[Unit]
+Description=Script Scheduler Service
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/ScriptScheduler
+Restart=always
+User=nobody
+Group=nogroup
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=ScriptScheduler
+
+[Install]
+WantedBy=multi-user.target
+```
+
+To install and enable the service, you can add the following commands to your setup script:
+
+```sh
+# Copy the systemd service file
+sudo cp ../scriptscheduler.service /etc/systemd/system/
+
+# Reload systemd manager configuration
+sudo systemctl daemon-reload
+
+# Enable and start the service
+sudo systemctl enable scriptscheduler
+sudo systemctl start scriptscheduler
+```
+
+### 5. Package the Application
+To distribute your application, you can create a package. For Debian-based systems, you can create a `.deb` package. Here is a basic guide:
+
+1. **Install `dpkg-dev`:**
+   ```sh
+   sudo apt-get install dpkg-dev
+   ```
+
+2. **Create the Directory Structure:**
+   ```sh
+   mkdir -p scriptscheduler/DEBIAN
+   mkdir -p scriptscheduler/usr/local/bin
+   mkdir -p scriptscheduler/etc/scriptscheduler
+   mkdir -p scriptscheduler/var/log/scriptscheduler
+   ```
+
+3. **Create the Control File:**
+   Create `scriptscheduler/DEBIAN/control` with the following content:
+   ```ini
+   Package: scriptscheduler
+   Version: 1.0
+   Section: base
+   Priority: optional
+   Architecture: amd64
+   Depends: libc6 (>= 2.29)
+   Maintainer: Your Name <your.email@example.com>
+   Description: Script Scheduler
+    A simple script scheduler.
+   ```
+
+4. **Copy Files:**
+   ```sh
+   cp build/ScriptScheduler scriptscheduler/usr/local/bin/
+   cp config.json scriptscheduler/etc/scriptscheduler/
+   cp scriptscheduler.service scriptscheduler/etc/systemd/system/
+   ```
+
+5. **Build the Package:**
+   ```sh
+   dpkg-deb --build scriptscheduler
+   ```
+
+This will create a `scriptscheduler.deb` package that can be installed using `dpkg -i scriptscheduler.deb`.
+
+### 6. Testing and Release
+- **Testing:** Thoroughly test the installation process, the systemd service, and the application itself.
+- **Release:** Once everything is tested and stable, you can release the package. Consider using a platform like GitHub to host your source code and releases.
+
+### 7. Documentation
+Ensure you have comprehensive documentation, including:
+- Installation instructions.
+- Usage instructions.
+- Configuration details.
+- Troubleshooting guide.
