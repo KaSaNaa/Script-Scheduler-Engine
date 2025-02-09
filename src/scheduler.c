@@ -6,6 +6,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/inotify.h>
+#include <limits.h>
+
+#define CONFIG_FILE "config.json"
+#define EVENT_SIZE (sizeof(struct inotify_event))
+#define EVENT_BUF_LEN (1024 * (EVENT_SIZE + 16))
 
 PriorityQueue *task_queue;
 pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -41,4 +47,47 @@ bool add_task(Task task) {
   }
   pthread_mutex_unlock(&queue_mutex);
   return success;
+}
+
+void *watch_config_file(void *arg) {
+  (void)arg; // Unused parameter
+  int fd = inotify_init();
+  if (fd < 0) {
+    log_error("inotify_init");
+    return NULL;
+  }
+
+  int wd = inotify_add_watch(fd, CONFIG_FILE, IN_MODIFY);
+  if (wd == -1) {
+    log_error("inotify_add_watch");
+    close(fd);
+    return NULL;
+  }
+
+  char buffer[EVENT_BUF_LEN];
+  while (1) {
+    int length = read(fd, buffer, EVENT_BUF_LEN);
+    if (length < 0) {
+      log_error("read");
+      break;
+    }
+
+    for (int i = 0; i < length; i += EVENT_SIZE + ((struct inotify_event *)&buffer[i])->len) {
+      struct inotify_event *event = (struct inotify_event *)&buffer[i];
+      if (event->mask & IN_MODIFY) {
+        printf("Config file modified, reloading tasks...\n");
+        load_tasks_from_json(CONFIG_FILE);
+      }
+    }
+  }
+
+  inotify_rm_watch(fd, wd);
+  close(fd);
+  return NULL;
+}
+
+void start_config_watcher(void) {
+  pthread_t watcher_thread;
+  pthread_create(&watcher_thread, NULL, watch_config_file, NULL);
+  pthread_detach(watcher_thread);
 }
