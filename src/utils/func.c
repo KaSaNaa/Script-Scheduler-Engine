@@ -13,6 +13,8 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -63,6 +65,15 @@ void execute_script(const char *script) {
 }
 
 void log_error(const char *message) {
+  // Create the logs directory if it doesn't exist
+  struct stat st = {0};
+  if (stat("logs", &st) == -1) {
+    if (mkdir("logs", 0700) != 0) {
+      perror("Failed to create logs directory");
+      return;
+    }
+  }
+
   FILE *log_file = fopen("logs/scheduler.log", "a");
   if (log_file) {
     time_t now = time(NULL);
@@ -73,8 +84,7 @@ void log_error(const char *message) {
             strerror(errno));
     fclose(log_file);
   } else {
-    perror("Failed to open log file. Create the directory /log if it does not "
-           "exist.");
+    perror("Failed to open log file");
   }
 }
 
