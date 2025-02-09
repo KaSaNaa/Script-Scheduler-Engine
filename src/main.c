@@ -11,9 +11,9 @@ int main(void) {
 
   setup_signal_handlers();
   start_watchdog();
+  start_config_watcher();
 
   while (1) {
     pause();
   }
-  //
 }

@@ -14,5 +14,6 @@ void initialize_scheduler(void);
 void run_scheduler(void);
 bool add_task(Task task);
 void start_scheduler_thread(void);
+void start_config_watcher(void);
 
 #endif // SCHEDULER_H
