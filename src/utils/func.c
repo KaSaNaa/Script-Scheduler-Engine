@@ -175,31 +175,48 @@ void load_tasks_from_json(const char *filename) {
   fseek(file, 0, SEEK_SET);
 
   char *data = malloc(length + 1);
+  if (data == NULL) {
+    perror("Failed to allocate memory");
+    fclose(file);
+    return;
+  }
+
   fread(data, 1, length, file);
   fclose(file);
   data[length] = '\0';
 
-  struct json_object *parsed_json;
+  struct json_object *parsed_json = json_tokener_parse(data);
+  if (parsed_json == NULL) {
+    fprintf(stderr, "Failed to parse JSON data\n");
+    free(data);
+    return;
+  }
+
   struct json_object *tasks;
-  struct json_object *task;
-  struct json_object *script;
-  struct json_object *time;
-  size_t n_tasks;
-  size_t i;
-  struct tm tm;
+  if (!json_object_object_get_ex(parsed_json, "tasks", &tasks) || 
+      json_object_get_type(tasks) != json_type_array) {
+    fprintf(stderr, "Invalid or missing 'tasks' array in JSON data\n");
+    json_object_put(parsed_json);
+    free(data);
+    return;
+  }
 
-  parsed_json = json_tokener_parse(data);
-  json_object_object_get_ex(parsed_json, "tasks", &tasks);
-  n_tasks = json_object_array_length(tasks);
+  size_t n_tasks = json_object_array_length(tasks);
+  for (size_t i = 0; i < n_tasks; i++) {
+    struct json_object *task = json_object_array_get_idx(tasks, i);
+    struct json_object *script;
+    struct json_object *time;
 
-  for (i = 0; i < n_tasks; i++) {
-    task = json_object_array_get_idx(tasks, i);
-    json_object_object_get_ex(task, "script", &script);
-    json_object_object_get_ex(task, "time", &time);
+    if (!json_object_object_get_ex(task, "script", &script) ||
+        !json_object_object_get_ex(task, "time", &time)) {
+      fprintf(stderr, "Invalid task entry in JSON data\n");
+      continue;
+    }
 
     const char *time_str = json_object_get_string(time);
     printf("Parsing time: %s\n", time_str); // Debugging statement
 
+    struct tm tm;
     memset(&tm, 0, sizeof(struct tm));
     if (strptime(time_str, "%Y-%m-%dT%H:%M:%S", &tm) == NULL) {
       printf("Failed to parse time: %s\n", time_str); // Debugging statement
@@ -223,6 +240,6 @@ void load_tasks_from_json(const char *filename) {
     add_task(new_task);
   }
 
-  free(data);
   json_object_put(parsed_json);
+  free(data);
 }
