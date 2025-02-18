@@ -17,6 +17,6 @@ def load_tasks_from_json(filename):
         data = json.load(file)
     tasks = []
     for task_data in data.get("tasks", []):
-        task = Task(task_data["script"], task_data["time"])
+        task = Task(task_data["script_path"], task_data["scheduled_time"])
         tasks.append(task)
     return tasks

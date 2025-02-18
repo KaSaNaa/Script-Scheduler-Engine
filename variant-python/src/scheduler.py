@@ -12,11 +12,13 @@ CONFIG_FILE = "config.json"
 TASK_QUEUE = PriorityQueue()
 QUEUE_COND = threading.Condition()
 
+
 class ConfigFileHandler(FileSystemEventHandler):
     def on_modified(self, event):
         if event.src_path.endswith(CONFIG_FILE):
             print("Config file modified, reloading tasks...")
             initialize_scheduler()
+
 
 def initialize_scheduler():
     global TASK_QUEUE
@@ -27,6 +29,7 @@ def initialize_scheduler():
             TASK_QUEUE.put((task.scheduled_time, task))
         QUEUE_COND.notify_all()
     print("Scheduler Initialized.")
+
 
 def scheduler_thread_func():
     while True:
@@ -39,10 +42,12 @@ def scheduler_thread_func():
             time.sleep((scheduled_time - now).total_seconds())
         task.run()
 
+
 def start_scheduler_thread():
     scheduler_thread = threading.Thread(target=scheduler_thread_func)
     scheduler_thread.daemon = True
     scheduler_thread.start()
+
 
 def start_config_watcher():
     if not os.path.exists(CONFIG_FILE):
@@ -51,6 +56,8 @@ def start_config_watcher():
 
     event_handler = ConfigFileHandler()
     observer = Observer()
-    observer.schedule(event_handler, path=os.path.dirname(CONFIG_FILE) or '.', recursive=False)
+    observer.schedule(
+        event_handler, path=os.path.dirname(CONFIG_FILE) or ".", recursive=False
+    )
     observer.start()
     return observer

@@ -67,4 +67,4 @@ __pycache__
 venv/
 
 scripts/
-config.json
+variant-python/config.json
