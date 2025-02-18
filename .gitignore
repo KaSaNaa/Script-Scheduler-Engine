@@ -1,5 +1,69 @@
-.vscode/PythonImportHelper-v2-Completion.json
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+logs/
+*.su
+*.idb
+*.pdb
+*.log
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.cache/
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+
+# Ignore IDE and editor files
+.vscode/
+.idea/
+
+# Ignore build directories
+build/
+out/
+
+.vscode/
 __pycache__
 venv/
-.vscode/
-config.json
+
+scripts/
