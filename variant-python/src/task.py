@@ -1,5 +1,4 @@
 import subprocess
-import threading
 from datetime import datetime
 
 class Task:

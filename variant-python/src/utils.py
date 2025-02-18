@@ -1,7 +1,7 @@
-import datetime
-import json
 import os
-from src.task import Task
+import json
+from datetime import datetime
+from task import Task
 
 def log_error(message):
     if not os.path.exists("logs"):
@@ -10,6 +10,9 @@ def log_error(message):
         log_file.write(f"[{datetime.now()}] ERROR: {message}\n")
 
 def load_tasks_from_json(filename):
+    if not os.path.exists(filename):
+        with open(filename, "w") as file:
+            json.dump({"tasks": []}, file)
     with open(filename, "r") as file:
         data = json.load(file)
     tasks = []

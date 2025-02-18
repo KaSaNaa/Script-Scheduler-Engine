@@ -6,11 +6,11 @@ setup(
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     install_requires=[
-        # Add your dependencies here
+        "watchdog",
     ],
     entry_points={
         "console_scripts": [
-            "scriptscheduler=scheduler:main",
+            "scriptscheduler=main:main",
         ],
     },
 )
