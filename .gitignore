@@ -67,3 +67,4 @@ __pycache__
 venv/
 
 scripts/
+config.json
