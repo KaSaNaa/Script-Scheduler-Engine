@@ -21,16 +21,13 @@ def scheduler_thread_func():
             while not TASK_QUEUE:
                 QUEUE_COND.wait()
             task = TASK_QUEUE.pop(0)
-        execute_task(task)
+        task_thread = threading.Thread(target=task.run)
+        task_thread.start()
 
 def start_scheduler_thread():
     scheduler_thread = threading.Thread(target=scheduler_thread_func)
     scheduler_thread.daemon = True
     scheduler_thread.start()
-
-def execute_task(task):
-    print(f"Executing task: {task.script_name} at {datetime.now()}")
-    os.system(task.script_name)
 
 def watch_config_file():
     last_modified = os.path.getmtime(CONFIG_FILE)
